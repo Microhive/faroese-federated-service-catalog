@@ -1,0 +1,78 @@
+{
+  "@context": [
+    "https://semiceu.github.io/CPSV-AP/releases/3.2.0/context/cpsv-ap.jsonld",
+    {
+      "ex": "https://example.gov.fo/vocab#",
+      "eli": "http://data.europa.eu/eli/ontology#",
+      "schema": "https://schema.org/",
+      "foaf": "http://xmlns.com/foaf/0.1/"
+    }
+  ],
+  "@graph": [
+    {
+      "@id": "https://services.example.gov.fo/id/publicservice/aettleidingarstudul",
+      "@type": "PublicService",
+      "identifier": "av:aettleidingarstudul",
+      "title": "Ættleiðingarstuðul",
+      "description": "Stuðul til útreiðslur í sambandi við ættleiðing av útlendskum barni. Stuðulin kann vera upp til 100.000 kr og verður veittur eina ferð fyri hvørt barn. Máltal: svar innan 14 dagar, tá ið øll neyðug skjøl eru innkomin.",
+      "landingPage": { "@id": "https://www.av.fo/fo/utgjoeld-og-veitingar/aettleidingarstudul" },
+      "hasCompetentAuthority": { "@id": "https://services.example.gov.fo/id/org/almannaverkid" },
+      "processingTime": "P14D",
+
+      "hasChannel": [
+        { "@id": "https://services.example.gov.fo/id/channel/aettleidingarstudul-application" }
+      ],
+
+      "hasInput": [
+        { "@id": "https://services.example.gov.fo/id/evidence/application-form-aettleidingarstudul" }
+      ],
+
+      "produces": [
+        { "@id": "https://services.example.gov.fo/id/output/aettleidingarstudul-grant" }
+      ],
+
+      "hasLegalResource": [
+        { "@id": "https://www.av.fo/fo/um-almannaverkid/datuvernd" }
+      ]
+    },
+
+    {
+      "@id": "https://services.example.gov.fo/id/org/almannaverkid",
+      "@type": "PublicOrganisation",
+      "prefLabel": "Almannaverkið",
+      "spatial": { "@id": "https://example.gov.fo/id/territory/fo" }
+    },
+
+    {
+      "@id": "https://services.example.gov.fo/id/channel/aettleidingarstudul-application",
+      "@type": "Channel",
+      "identifier": "av:aettleidingarstudul:channel:application",
+      "description": "Application channel for Ættleiðingarstuðul (application form / submission route).",
+      "type": { "@id": "https://example.gov.fo/id/channel-type/form" },
+      "hasInput": [
+        { "@id": "https://services.example.gov.fo/id/evidence/application-form-aettleidingarstudul" }
+      ]
+    },
+
+    {
+      "@id": "https://services.example.gov.fo/id/evidence/application-form-aettleidingarstudul",
+      "@type": "Evidence",
+      "identifier": "av:aettleidingarstudul:evidence:application-form",
+      "title": "Umsókn um ættleiðingarstuðul (oyðublað)",
+      "page": { "@id": "https://www.av.fo/fo/utgjoeld-og-veitingar/aettleidingarstudul" }
+    },
+
+    {
+      "@id": "https://services.example.gov.fo/id/output/aettleidingarstudul-grant",
+      "@type": "Output",
+      "identifier": "av:aettleidingarstudul:output:grant",
+      "title": "Útgjald: Ættleiðingarstuðul (upp til 100.000 kr)"
+    },
+
+    {
+      "@id": "https://www.av.fo/fo/um-almannaverkid/datuvernd",
+      "@type": "eli:LegalResource",
+      "title": "Dátuvernd á Almannaverkinum"
+    }
+  ]
+}

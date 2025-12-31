@@ -1,0 +1,24 @@
+{
+  "@context": {
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dct": "http://purl.org/dc/terms/",
+    "foaf": "http://xmlns.com/foaf/0.1/"
+  },
+  "@id": "https://services.example.gov.fo/id/catalog/almannaverkid",
+  "@type": "dcat:Catalog",
+  "dct:title": "Almannaverkið Service Catalog",
+  "dct:description": "Public services provided by Almannaverkið (Social Services Agency of the Faroe Islands)",
+  "dct:publisher": {
+    "@id": "https://services.example.gov.fo/id/org/almannaverkid",
+    "@type": "foaf:Organization",
+    "foaf:name": "Almannaverkið"
+  },
+  "dct:language": "fo",
+  "dcat:dataset": [
+    {
+      "@id": "https://services.example.gov.fo/id/publicservice/aettleidingarstudul",
+      "@type": "dcat:Dataset",
+      "dct:title": "Ættleiðingarstuðul"
+    }
+  ]
+}

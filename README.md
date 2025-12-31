@@ -78,3 +78,183 @@ Government (or a central unit) provides an overview by:
 
 ## Folder structure (suggested)
 
+### Organisation repository layout
+
+Each organisation repository follows this structure:
+
+```
+org-service-catalog/
+├── catalog.jsonld             # DCAT Dataset describing this organization's catalog
+├── services/
+│   └── <service-id>/
+│       ├── service.jsonld           # CPSV-AP core record
+│       └── execution-plan.jsonld    # MVP extension (optional step-by-step plan)
+└── README.md
+```
+
+### Federation hub (this repository)
+
+```
+faroese-federated-service-catalog/
+├── README.md
+├── profiles/
+│   └── mvp-profile.md         # MVP-required fields documentation
+├── vocabularies/
+│   └── extension-vocab.jsonld # Extension vocabulary (ex:ExecutionPlan, etc.)
+├── registry/
+│   └── repos.json             # List of participating org repositories
+├── services/                  # Example services (reference implementations)
+│   └── aettleidingarstudul/
+│       ├── service.jsonld
+│       └── execution-plan.jsonld
+├── tools/
+│   ├── validator/             # JSON-LD + SHACL validation
+│   ├── crawler/               # Repository aggregator
+│   └── mcp-adapter/           # MCP server wrapper
+└── .github/
+    └── workflows/
+        └── validate.yml       # CI validation pipeline
+```
+
+---
+
+## MVP-required fields (CPSV-AP profile)
+
+Every service must include these fields:
+
+| Entity | Required Fields |
+|--------|----------------|
+| `PublicService` | `identifier`, `title`, `description`, `hasCompetentAuthority`, `processingTime` |
+| `Channel` | `identifier`, optionally `type`, `hasInput` |
+| `Evidence` | `identifier`, `title`, optionally `page` (link to forms/docs) |
+| `hasLegalResource` | At least one legal resource (policy/DSA references) |
+
+### MVP extension (Execution Plan)
+
+For process/workflow-level checks, attach an `ex:ExecutionPlan` as JSON-LD with:
+
+- `schema:step` array of `schema:HowToStep` entries
+- Per-step `ex:stepSla` (ISO8601 duration)
+- `ex:requiresDataSharingAgreement` for cross-org data sharing
+
+---
+
+## Validation pipeline (CI)
+
+The validation pipeline checks:
+
+1. **JSON-LD parsing** - Valid JSON-LD syntax
+2. **SHACL validation** - CPSV-AP conformance
+3. **MVP completeness rules**:
+   - Missing `processingTime` ⇒ "Missing SLA"
+   - Missing `hasLegalResource` when cross-org participation exists ⇒ "Missing DSA/legal basis"
+   - Channels missing `type` ⇒ "Ambiguous access method"
+   - Evidence missing `page` ⇒ "No application/form link"
+   - `ex:stepSla: null` ⇒ "Missing step SLA"
+   - `ex:involvesExternalOrganisation` without `ex:requiresDataSharingAgreement` ⇒ "Missing DSA"
+
+---
+
+## MCP adapter (AI agent interface)
+
+The MCP server wrapper exposes:
+
+| Type | Endpoint | Description |
+|------|----------|-------------|
+| Resource | `service://<id>` | Returns CPSV-AP JSON-LD graph for a service |
+| Tool | `search_services(query, filters)` | Returns IDs + short summaries |
+| Tool | `explain_service(serviceId, persona)` | Plain-language walkthrough |
+| Tool | `compliance_report(serviceId)` | Flags missing SLA/DSA/form links |
+
+---
+
+## Example: Ættleiðingarstuðul
+
+See the complete example in [`services/aettleidingarstudul/`](services/aettleidingarstudul/):
+
+- **Service**: Support up to 100,000 kr for foreign child adoption
+- **Processing time**: 14 days once all documents are received
+- **Competent authority**: Almannaverkið
+
+### Key files:
+- [`service.jsonld`](services/aettleidingarstudul/service.jsonld) - CPSV-AP core record
+- [`execution-plan.jsonld`](services/aettleidingarstudul/execution-plan.jsonld) - Step-by-step process with SLAs
+
+---
+
+## Quick checklist (MVP definition of done)
+
+- [ ] Org repos contain CPSV-AP JSON-LD for each service
+- [ ] CI validates via official SHACL + MVP completeness rules
+- [ ] Central crawler builds an aggregated index
+- [ ] MCP adapter supports: search → fetch service → fetch execution plan → compliance report
+- [ ] Duplicate candidate report runs nightly (text similarity + evidence/output overlap)
+
+---
+
+## Getting started
+
+### 1. Create a service record
+
+Copy the template from `services/aettleidingarstudul/service.jsonld` and customize:
+
+```json
+{
+  "@context": [
+    "https://semiceu.github.io/CPSV-AP/releases/3.2.0/context/cpsv-ap.jsonld",
+    { "ex": "https://example.gov.fo/vocab#" }
+  ],
+  "@graph": [
+    {
+      "@id": "https://services.example.gov.fo/id/publicservice/your-service-id",
+      "@type": "PublicService",
+      "identifier": "org:your-service-id",
+      "title": "Your Service Title",
+      "description": "Service description...",
+      "hasCompetentAuthority": { "@id": "https://services.example.gov.fo/id/org/your-org" },
+      "processingTime": "P14D"
+      // ... channels, inputs, outputs, legal resources
+    }
+  ]
+}
+```
+
+### 2. Add an execution plan (optional)
+
+Create `execution-plan.jsonld` with step-by-step process:
+
+```json
+{
+  "@context": {
+    "ex": "https://example.gov.fo/vocab#",
+    "schema": "https://schema.org/"
+  },
+  "@type": "ex:ExecutionPlan",
+  "schema:step": [
+    {
+      "@type": "schema:HowToStep",
+      "name": "Step name",
+      "text": "Step description",
+      "ex:stepSla": "P0D"
+    }
+  ]
+}
+```
+
+### 3. Run validation
+
+```bash
+# TODO: Validation tooling will be added
+npm run validate
+```
+
+---
+
+## References
+
+- [CPSV-AP 3.2.0 Specification](https://semiceu.github.io/CPSV-AP/releases/3.2.0/)
+- [CPSV-AP JSON-LD Context](https://semiceu.github.io/CPSV-AP/releases/3.2.0/context/cpsv-ap.jsonld)
+- [CPSV-AP SHACL Shapes](https://semiceu.github.io/CPSV-AP/releases/3.2.0/shacl/cpsv-ap-SHACL.ttl)
+- [Almannaverkið - Ættleiðingarstuðul](https://www.av.fo/fo/utgjoeld-og-veitingar/aettleidingarstudul)
+- [Almannaverkið - Dátuvernd](https://www.av.fo/fo/um-almannaverkid/datuvernd)
+
