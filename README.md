@@ -1,4 +1,4 @@
-# faroese-federated-service-catalog
+# Proposed Faroese Federated Service Catalog
 
 Federated service & process catalog for the Faroe Islands, modeled in **CPSV-AP (JSON-LD)** and maintained as **docs-as-code in Git**.  
 Designed to enable cross-organisation discovery, duplicate detection, and measurable process/compliance checks (e.g., missing SLA per step, missing data sharing agreements), and to be exposed to AI agents via **MCP**.
