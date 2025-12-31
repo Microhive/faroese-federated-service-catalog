@@ -1,0 +1,46 @@
+{
+  "@context": {
+    "ex": "https://example.gov.fo/vocab#",
+    "schema": "https://schema.org/",
+    "dct": "http://purl.org/dc/terms/",
+    "eli": "http://data.europa.eu/eli/ontology#"
+  },
+  "@id": "https://services.example.gov.fo/id/executionplan/aettleidingarstudul",
+  "@type": "ex:ExecutionPlan",
+  "dct:subject": { "@id": "https://services.example.gov.fo/id/publicservice/aettleidingarstudul" },
+
+  "schema:step": [
+    {
+      "@type": "schema:HowToStep",
+      "name": "Check eligibility",
+      "text": "Confirm the adoption is via an officially approved organisation.",
+      "ex:stepSla": "P0D"
+    },
+    {
+      "@type": "schema:HowToStep",
+      "name": "Prepare documents",
+      "text": "Collect the required documentation and complete the application form.",
+      "ex:requiredEvidence": [
+        { "@id": "https://services.example.gov.fo/id/evidence/application-form-aettleidingarstudul" }
+      ],
+      "ex:stepSla": null
+    },
+    {
+      "@type": "schema:HowToStep",
+      "name": "Submit application",
+      "text": "Submit the application through the defined channel.",
+      "ex:channel": { "@id": "https://services.example.gov.fo/id/channel/aettleidingarstudul-application" },
+      "ex:stepSla": "P0D"
+    },
+    {
+      "@type": "schema:HowToStep",
+      "name": "Verification + payout trigger",
+      "text": "Payment is triggered when Familjufyrisitingin confirms the child has arrived to the Faroe Islands.",
+      "ex:involvesExternalOrganisation": "Familjufyrisitingin",
+      "ex:requiresDataSharingAgreement": {
+        "@id": "https://services.example.gov.fo/id/legal/dsa-av-familjufyrisitingin"
+      },
+      "ex:stepSla": "P14D"
+    }
+  ]
+}
