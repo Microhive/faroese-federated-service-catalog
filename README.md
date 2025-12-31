@@ -180,6 +180,8 @@ See the complete example in [`services/aettleidingarstudul/`](services/aettleidi
 - [`service.jsonld`](services/aettleidingarstudul/service.jsonld) - CPSV-AP core record
 - [`execution-plan.jsonld`](services/aettleidingarstudul/execution-plan.jsonld) - Step-by-step process with SLAs
 
+> **Note**: The execution plan example intentionally includes a step with `ex:stepSla: null` (the "Prepare documents" step) to demonstrate what triggers the "Missing step SLA" validation error. In a production service, all steps should have defined SLAs.
+
 ---
 
 ## Quick checklist (MVP definition of done)
@@ -212,8 +214,11 @@ Copy the template from `services/aettleidingarstudul/service.jsonld` and customi
       "title": "Your Service Title",
       "description": "Service description...",
       "hasCompetentAuthority": { "@id": "https://services.example.gov.fo/id/org/your-org" },
-      "processingTime": "P14D"
-      // ... channels, inputs, outputs, legal resources
+      "processingTime": "P14D",
+      "hasChannel": [],
+      "hasInput": [],
+      "produces": [],
+      "hasLegalResource": []
     }
   ]
 }
